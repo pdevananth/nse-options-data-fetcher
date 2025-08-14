@@ -11,10 +11,10 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     
     - name: Download previous database
-      uses: dawidd6/action-download-artifact@v2
+      uses: dawidd6/action-download-artifact@v3
       with:
         workflow: daily-fetch.yml
         workflow_conclusion: success
@@ -37,7 +37,7 @@ jobs:
         python nse_fetcher.py daily
     
     - name: Upload updated database
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: nse-daily-data-latest
         path: data/nse_options.db
