@@ -1,0 +1,50 @@
+name: Daily Data Update
+
+on:
+  schedule:
+    # Run at 3:30 PM IST (10:00 AM UTC) on weekdays
+    - cron: '0 10 * * 1-5'
+  workflow_dispatch:
+
+jobs:
+  daily-update:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Download previous database
+      uses: dawidd6/action-download-artifact@v2
+      with:
+        workflow: daily-fetch.yml
+        workflow_conclusion: success
+        name: nse-daily-data-latest
+        path: data/
+      continue-on-error: true
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+    
+    - name: Run daily fetch
+      run: |
+        python nse_fetcher.py daily
+    
+    - name: Upload updated database
+      uses: actions/upload-artifact@v3
+      with:
+        name: nse-daily-data-latest
+        path: data/nse_options.db
+        retention-days: 30
+    
+    - name: Generate report
+      run: |
+        echo "## Daily Fetch Report" >> $GITHUB_STEP_SUMMARY
+        echo "- Date: $(date)" >> $GITHUB_STEP_SUMMARY
+        echo "- Run: ${{ github.run_number }}" >> $GITHUB_STEP_SUMMARY
