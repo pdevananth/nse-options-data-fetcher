@@ -17,7 +17,7 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     
     - name: Set up Python
       uses: actions/setup-python@v4
@@ -37,7 +37,7 @@ jobs:
         python nse_fetcher.py historical
     
     - name: Upload database
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: nse-historical-data-${{ github.run_number }}
         path: data/nse_options.db
