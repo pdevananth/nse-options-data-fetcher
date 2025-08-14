@@ -1,0 +1,51 @@
+name: Historical Data Fetch
+
+on:
+  workflow_dispatch:
+    inputs:
+      stocks:
+        description: 'Comma-separated list of stocks (leave empty for config defaults)'
+        required: false
+        default: ''
+      days:
+        description: 'Number of days to fetch'
+        required: false
+        default: '180'
+
+jobs:
+  fetch-historical:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+    
+    - name: Run historical fetch
+      env:
+        FETCH_STOCKS: ${{ github.event.inputs.stocks }}
+        FETCH_DAYS: ${{ github.event.inputs.days }}
+      run: |
+        python nse_fetcher.py historical
+    
+    - name: Upload database
+      uses: actions/upload-artifact@v3
+      with:
+        name: nse-historical-data-${{ github.run_number }}
+        path: data/nse_options.db
+        retention-days: 90
+    
+    - name: Generate summary
+      run: |
+        echo "## Fetch Summary" >> $GITHUB_STEP_SUMMARY
+        echo "- Run ID: ${{ github.run_number }}" >> $GITHUB_STEP_SUMMARY
+        echo "- Date: $(date)" >> $GITHUB_STEP_SUMMARY
+        echo "- Status: Completed" >> $GITHUB_STEP_SUMMARY
