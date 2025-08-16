@@ -142,9 +142,12 @@ class NSEOptionsFetcher:
         logger.info(f"Fetching {symbol} - Last {days} days")
         
         try:
-            # Get current year and previous year
-            current_year = datetime.now().year
-            years_to_check = [current_year - 1, current_year, current_year + 1]
+            # Get years from config or default to last 3 years
+            if hasattr(self, 'years_to_check'):
+                years_to_check = self.years_to_check
+            else:
+                current_year = datetime.now().year
+                years_to_check = [current_year - 2, current_year - 1, current_year]  # 2022, 2023, 2024
             
             all_expiries = []
             
