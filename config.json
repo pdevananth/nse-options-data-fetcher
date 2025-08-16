@@ -1,3 +1,5 @@
 {
-  "stocks": ["RELIANCE", "TCS", "HDFCBANK", "INFY", "ICICIBANK"]
+  "stocks": ["RELIANCE"],
+  "years": [2022, 2023, 2024],
+  "days": 1095
 }
