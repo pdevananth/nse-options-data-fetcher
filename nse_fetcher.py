@@ -48,6 +48,7 @@ class NSEOptionsFetcher:
             "HINDALCO", "ADANIPORTS", "SHREECEM", "UPL", "VEDL",
             "BPCL", "HEROMOTOCO", "TATACONSUM", "SBILIFE", "BAJAJ-AUTO"
         ]
+        self.years_to_check = config.get('years', [2022, 2023, 2024, 2025])
         
         # Check for config file
         if os.path.exists('config.json'):
@@ -147,7 +148,7 @@ class NSEOptionsFetcher:
                 years_to_check = self.years_to_check
             else:
                 current_year = datetime.now().year
-                years_to_check = [current_year - 2, current_year - 1, current_year]  # 2022, 2023, 2024
+                years_to_check = [current_year - 3, current_year - 2, current_year - 1, current_year]  # Last 4 years including current
             
             all_expiries = []
             
